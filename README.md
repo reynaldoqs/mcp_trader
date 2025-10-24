@@ -129,9 +129,11 @@ To use this MCP server with Claude Desktop, add the following configuration to y
 
 **Location:**
 
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-- Linux: `~/.config/Claude/claude_desktop_config.json`
+Create or edit the Claude Desktop configuration file at:
+
+macOS: ~/Library/Application Support/Claude/claude_desktop_config.json
+Windows: %APPDATA%\Claude\claude_desktop_config.json
+Linux: ~/.config/Claude/claude_desktop_config.json
 
 **Configuration:**
 
@@ -139,10 +141,10 @@ To use this MCP server with Claude Desktop, add the following configuration to y
 {
   "mcpServers": {
     "Trading MCP": {
-      "command": "/Users/rey/.local/bin/uv",
+      "command": "/Users/Username/.local/bin/uv",
       "args": [
         "--directory",
-        "/Users/rey/Projects/MPCs/trading-mcp-py",
+        "/Users/Username/Projects/MPCs/trading-mcp-py",
         "run",
         "main.py"
       ]
@@ -168,11 +170,11 @@ The project uses Pydantic for type-safe configuration management. All settings c
 - `EXCHANGE_API_SECRET`: Your exchange API secret
 - `EXCHANGE_SANDBOX_MODE`: Enable sandbox/testnet mode (default: true)
 - `EXCHANGE_RATE_LIMIT`: Enable rate limiting (default: true)
-- `EXCHANGE_DEFAULT_TYPE`: Order type - 'spot' or 'future' (default: future)
+- `EXCHANGE_DEFAULT_TYPE`: Order type - 'spot', 'future', or 'margin' (default: future)
 
 ### MCP Settings
 
-- `MCP_SERVER_NAME`: Server name (default: trading-mcp-server)
+- `MCP_SERVER_NAME`: Server name (default: Trading MCP)
 
 ### Logging Settings
 
@@ -180,22 +182,50 @@ The project uses Pydantic for type-safe configuration management. All settings c
 - `LOG_FORMAT`: Log format string
 - `LOG_FILE_PATH`: Path to log file
 - `DEBUG`: Enable debug mode (default: false)
+- `LOG_ROTATION`: Log rotation policy (default: 1 day)
+- `LOG_RETENTION`: Log retention policy (default: 30 days)
+
+### General Settings
+
+- `ENVIRONMENT`: Runtime environment - 'development' or 'production' (default: production)
 
 ## 📚 MCP Tools & Resources
 
 ### Available Tools
 
-- **`get_account_balance`**: Fetch account balance information
-- **`check_usdt_balance`**: Check USDT balance with minimum requirement
-- **`get_usdt_amount`**: Get current available USDT amount
-- **`has_open_orders`**: Check for open orders
-- **`has_available_balance`**: Check available balance for specific currency
+- **`open_market_long(symbol, usdt_amount)`**: Open a long position at market price
+- **`open_market_short(symbol, usdt_amount)`**: Open a short position at market price
+- **`open_limit_long(symbol, usdt_amount, price)`**: Place a limit buy to open long
+- **`open_limit_short(symbol, usdt_amount, price)`**: Place a limit sell to open short
+- **`close_position(symbol)`**: Close all positions for a symbol
+- **`get_balance()`**: Return formatted account balance
 
 ### Available Resources
 
 - **`account://balance`**: Real-time account balance data
-- **`account://positions`**: Current open positions
-- **`market://ticker/{symbol}`**: Market ticker data for symbol
+
+## ⚡ Quickstart: Common Actions
+
+1. **Check your balance**
+
+   - Resource: `account://balance`
+   - Tool: `get_balance()`
+
+2. **Open a position**
+
+   - Long at market: `open_market_long(symbol="BTC/USDT" or "BTCUSDT", usdt_amount=50)`
+   - Short at market: `open_market_short(symbol="BTC/USDT" or "BTCUSDT", usdt_amount=50)`
+   - Long with limit: `open_limit_long(symbol, usdt_amount, price)`
+   - Short with limit: `open_limit_short(symbol, usdt_amount, price)`
+
+3. **Close a position**
+
+   - `close_position(symbol)`
+
+Notes:
+
+- Symbols should match your exchange format (e.g., `BTCUSDT` on Binance). If unsure, use the exact symbol as returned by your exchange via CCXT.
+- Ensure sufficient balance and correct permissions on your API key.
 
 ## 🏗️ Architecture
 

@@ -1,5 +1,6 @@
 """MCP tools registration and implementation."""
 
+from .resources_helper import format_balance_for_llm
 from typing import Any
 from mcp.server.fastmcp import FastMCP
 from loguru import logger
@@ -141,5 +142,24 @@ def register_tools(mcp: FastMCP[Any], exchange_client: ExchangeClient) -> None:
         except Exception as e:
             logger.error(f"Tool close_position failed: {e}")
             return f"Failed to close position: {str(e)}"
+
+    @mcp.tool()
+    def get_balance() -> str:
+        """
+        Get current account balance.
+        
+        Returns:
+            Account balance information
+        """
+        try:
+            account_balance: Balances = exchange_client.retrieve_balance()
+            formatted_balance = format_balance_for_llm(account_balance)
+            return formatted_balance
+            
+        except Exception as e:
+            logger.error(f"Tool get_balance failed: {e}")
+            return f"Failed to get account balance: {str(e)}"
     
     logger.info("MCP tools registered successfully")
+
+
