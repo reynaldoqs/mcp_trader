@@ -23,11 +23,7 @@ class ExchangeClient:
         self.exchange: binance
         
     def initialize(self) -> None:
-
-        self.logger.info("config: {}".format(self.config.exchange))
-        self.logger.info(self.config.exchange)
         
-
         try:
             self.exchange = ccxt.binance({
                 'apiKey': self.config.exchange.api_key,
@@ -121,14 +117,14 @@ class ExchangeClient:
             
             order = self.exchange.create_order(
                 symbol=symbol,
-                type=order_type.value,
-                side=side.value,
+                type=order_type,
+                side=side,
                 amount=float(amount),
                 price=float(price) if price else None,
                 params=order_params
             )
             
-            self.logger.info(f"Order created: {order.get('id')} - {side.value} {amount} {symbol}")
+            self.logger.info(f"Order created: {order.get('id')} - {side} {amount} {symbol}")
             return order
             
         except ccxt.AuthenticationError as e:
@@ -140,7 +136,8 @@ class ExchangeClient:
         except Exception as e:
             raise TradingError(f"Failed to create order: {e}")
 
-    async def create_usdt_order(
+    # exchange.create_usdt_order("BTCUSDT", "market", "BUY", 0.01, 10000)
+    def create_usdt_order(
         self,
         symbol: str,
         order_type: OrderType,
@@ -161,7 +158,7 @@ class ExchangeClient:
             if amount < min_amount:
                 raise InvalidOrderError(f"Amount {amount} is less than minimum required amount {min_amount}")
             
-            return await self.create_order(
+            return self.create_order(
                 symbol=symbol,
                 order_type=order_type,
                 side=side,

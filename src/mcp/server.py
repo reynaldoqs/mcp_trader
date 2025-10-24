@@ -21,7 +21,7 @@ class MCPServer:
     
     def initialize(self, exchange_client: ExchangeClient) -> None:
         try:
-            register_tools(self.mcp)
+            register_tools(self.mcp, exchange_client)
             register_resources(self.mcp, exchange_client)
             self._initialized = True
             self.logger.info("MCP server initialized successfully")

@@ -6,43 +6,119 @@ from loguru import logger
 
 from ..core.types import OrderSide, OrderType
 from ..core.exceptions import TradingError, ValidationError
+from ..services.exchange_client import ExchangeClient
 
 
-def register_tools(mcp: FastMCP[Any]) -> None:
-    
+def register_tools(mcp: FastMCP[Any], exchange_client: ExchangeClient) -> None:
     @mcp.tool()
-    def create_order(
-        symbol: str,
-        side: str,
-        order_type: str = "market",
-        usdt_amount: float = 0.0,
-        price: float = None
-    ) -> str:
+    def open_market_long(symbol: str, usdt_amount: int) -> str:
         """
-        Create a trading order.
+        Open long position with market current price.
         
         Args:
             symbol: Trading symbol (e.g., 'BTCUSDT')
-            side: Order side ('buy' or 'sell')
-            order_type: Order type ('market' or 'limit')
             usdt_amount: Amount in USDT to trade
-            price: Price for limit orders
             
         Returns:
-            Order creation result message
+            Position opening result message
         """
         try:
-            if not symbol or not side:
-                raise ValidationError("Symbol and side are required")
+            if not symbol:
+                raise ValidationError("Symbol is required")
             
             if usdt_amount <= 0:
                 raise ValidationError("USDT amount must be positive")
             
-         
+            exchange_client.market_buy(symbol, usdt_amount)
+            
+            return "Position opened successfully"
                 
         except Exception as e:
-            logger.error(f"Tool create_order failed: {e}")
-            return f"Order creation failed: {str(e)}"
+            logger.error(f"Tool open_market_long failed: {e}")
+            return f"Failed to open market long position: {str(e)}"
+    
+    @mcp.tool()
+    def open_market_short(symbol: str, usdt_amount: int) -> str:
+        """
+        Open short position with market current price.
+        
+        Args:
+            symbol: Trading symbol (e.g., 'BTCUSDT')
+            usdt_amount: Amount in USDT to trade
+            
+        Returns:
+            Position opening result message
+        """
+        try:
+            if not symbol:
+                raise ValidationError("Symbol is required")
+            
+            if usdt_amount <= 0:
+                raise ValidationError("USDT amount must be positive")
+            
+            exchange_client.market_sell(symbol, usdt_amount)
+            
+            return "Position opened successfully"
+                
+        except Exception as e:
+            logger.error(f"Tool open_market_short failed: {e}")
+            return f"Failed to open market short position: {str(e)}"
+
+    @mcp.tool()
+    def open_limit_long(symbol: str, usdt_amount: int, price: int) -> str:
+        """
+        Open long position with limit order.
+        
+        Args:
+            symbol: Trading symbol (e.g., 'BTCUSDT')
+            usdt_amount: Amount in USDT to trade
+            price: Limit price
+            
+        Returns:
+            Position opening result message
+        """
+        try:
+            if not symbol:
+                raise ValidationError("Symbol is required")
+            
+            if usdt_amount <= 0:
+                raise ValidationError("USDT amount must be positive")
+            
+            exchange_client.limit_buy(symbol, usdt_amount, price)
+            
+            return "Position opened successfully"
+                
+        except Exception as e:
+            logger.error(f"Tool open_limit_long failed: {e}")
+            return f"Failed to open limit long position: {str(e)}"
+    
+    @mcp.tool()
+    def open_limit_short(symbol: str, usdt_amount: int, price: int) -> str:
+        """
+        Open short position with limit order.
+        
+        Args:
+            symbol: Trading symbol (e.g., 'BTCUSDT')
+            usdt_amount: Amount in USDT to trade
+            price: Limit price
+            
+        Returns:
+            Position opening result message
+        """
+        try:
+            if not symbol:
+                raise ValidationError("Symbol is required")
+            
+            if usdt_amount <= 0:
+                raise ValidationError("USDT amount must be positive")
+            
+            exchange_client.limit_sell(symbol, usdt_amount, price)
+            
+            return "Position opened successfully"
+                
+        except Exception as e:
+            logger.error(f"Tool open_limit_short failed: {e}")
+            return f"Failed to open limit short position: {str(e)}"
     
     @mcp.tool()
     def close_position(symbol: str) -> str:
@@ -59,6 +135,9 @@ def register_tools(mcp: FastMCP[Any]) -> None:
             if not symbol:
                 raise ValidationError("Symbol is required")
             
+            exchange_client.close_position_by_symbol(symbol)
+            
+            return "Position closed successfully"
                 
         except Exception as e:
             logger.error(f"Tool close_position failed: {e}")

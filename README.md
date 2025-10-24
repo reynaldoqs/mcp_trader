@@ -58,11 +58,13 @@ trading-mcp-py/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    cd trading-mcp-py
    ```
 
 2. **Create and activate virtual environment**
+
    ```bash
    # Using uv (recommended)
    uv venv .venv
@@ -71,16 +73,19 @@ trading-mcp-py/
    ```
 
 3. **Install dependencies**
+
    ```bash
    uv pip install -r requirements.txt
    ```
 
 4. **Configure environment variables**
+
    ```bash
    cp .env.example .env
    ```
-   
+
    Edit `.env` with your exchange credentials:
+
    ```env
    EXCHANGE_API_KEY=your_api_key_here
    EXCHANGE_API_SECRET=your_api_secret_here
@@ -118,11 +123,47 @@ Inspect the MCP server configuration and validate setup:
 npx @modelcontextprotocol/inspector uv run main.py
 ```
 
+### Claude Desktop Integration
+
+To use this MCP server with Claude Desktop, add the following configuration to your Claude Desktop config file:
+
+**Location:**
+
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- Linux: `~/.config/Claude/claude_desktop_config.json`
+
+**Configuration:**
+
+```json
+{
+  "mcpServers": {
+    "Trading MCP": {
+      "command": "/Users/rey/.local/bin/uv",
+      "args": [
+        "--directory",
+        "/Users/rey/Projects/MPCs/trading-mcp-py",
+        "run",
+        "main.py"
+      ]
+    }
+  }
+}
+```
+
+**Note:** Update the paths in the configuration to match your local setup:
+
+- Replace `/Users/rey/.local/bin/uv` with your uv installation path (find it with `which uv`)
+- Replace `/Users/rey/Projects/MPCs/trading-mcp-py` with your project directory path
+
+After adding the configuration, restart Claude Desktop for the changes to take effect.
+
 ## 🔧 Configuration
 
 The project uses Pydantic for type-safe configuration management. All settings can be configured via environment variables:
 
 ### Exchange Settings
+
 - `EXCHANGE_API_KEY`: Your exchange API key
 - `EXCHANGE_API_SECRET`: Your exchange API secret
 - `EXCHANGE_SANDBOX_MODE`: Enable sandbox/testnet mode (default: true)
@@ -130,9 +171,11 @@ The project uses Pydantic for type-safe configuration management. All settings c
 - `EXCHANGE_DEFAULT_TYPE`: Order type - 'spot' or 'future' (default: future)
 
 ### MCP Settings
+
 - `MCP_SERVER_NAME`: Server name (default: trading-mcp-server)
 
 ### Logging Settings
+
 - `LOG_LEVEL`: Logging level (default: INFO)
 - `LOG_FORMAT`: Log format string
 - `LOG_FILE_PATH`: Path to log file
@@ -211,14 +254,17 @@ python test_env_loading.py
 ## 🐛 Troubleshooting
 
 ### Import Errors
+
 Ensure you're running from the project root and the virtual environment is activated.
 
 ### Exchange Connection Issues
+
 - Verify API credentials in `.env`
 - Check if sandbox mode is enabled for testnet
 - Ensure exchange API is accessible from your network
 
 ### MCP Server Not Starting
+
 - Check logs for detailed error messages
 - Validate configuration with the inspector tool
 - Ensure all dependencies are installed
@@ -226,6 +272,7 @@ Ensure you're running from the project root and the virtual environment is activ
 ## 📞 Support
 
 For issues and questions:
+
 - Check [AGENTS.md](./AGENTS.md) for architecture details
 - Review MCP specification documentation
 - Open an issue on the repository

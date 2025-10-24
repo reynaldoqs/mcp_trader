@@ -9,8 +9,8 @@ from datetime import datetime
 
 class OrderSide(str, Enum):
     """Order side enumeration."""
-    BUY = "buy"
-    SELL = "sell"
+    BUY = "BUY"
+    SELL = "SELL"
 
 
 class OrderType(str, Enum):
