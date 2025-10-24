@@ -131,9 +131,11 @@ To use this MCP server with Claude Desktop, add the following configuration to y
 
 Create or edit the Claude Desktop configuration file at:
 
+```
 macOS: ~/Library/Application Support/Claude/claude_desktop_config.json
 Windows: %APPDATA%\Claude\claude_desktop_config.json
 Linux: ~/.config/Claude/claude_desktop_config.json
+```
 
 **Configuration:**
 
