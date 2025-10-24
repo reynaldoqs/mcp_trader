@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     
     # General settings
     debug: bool = Field(False, env="DEBUG")
+    environment: Literal["development", "production"] = Field("production", env="ENVIRONMENT")
     
     model_config = SettingsConfigDict(
         env_file=".env",

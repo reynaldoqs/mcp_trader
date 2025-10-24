@@ -135,9 +135,8 @@ def register_tools(mcp: FastMCP[Any], exchange_client: ExchangeClient) -> None:
             if not symbol:
                 raise ValidationError("Symbol is required")
             
-            exchange_client.close_position_by_symbol(symbol)
-            
-            return "Position closed successfully"
+            result = exchange_client.close_position(symbol)
+            return result
                 
         except Exception as e:
             logger.error(f"Tool close_position failed: {e}")

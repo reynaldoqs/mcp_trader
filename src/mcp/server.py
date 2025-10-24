@@ -1,10 +1,10 @@
-from .resources import register_resources
-from ..services.exchange_client import ExchangeClient
 from typing import Any
 from mcp.server.fastmcp import FastMCP
 from loguru import logger
 
-from ..config import Settings, get_settings
+from ..config.settings import Settings, get_settings
+from ..services.exchange_client import ExchangeClient
+from .resources import register_resources
 from .tools import register_tools
 
 

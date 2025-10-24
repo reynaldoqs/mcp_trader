@@ -136,7 +136,6 @@ class ExchangeClient:
         except Exception as e:
             raise TradingError(f"Failed to create order: {e}")
 
-    # exchange.create_usdt_order("BTCUSDT", "market", "BUY", 0.01, 10000)
     def create_usdt_order(
         self,
         symbol: str,

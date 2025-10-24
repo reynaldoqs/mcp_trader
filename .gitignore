@@ -27,3 +27,5 @@ var/
 .DS_Store
 .idea/
 .vscode/
+logs/*
+!logs/.gitkeep
